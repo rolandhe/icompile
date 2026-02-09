@@ -1,5 +1,4 @@
 namespace go stable
-with_client=false
 
 struct ImageInfo
 {

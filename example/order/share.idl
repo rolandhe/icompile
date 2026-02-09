@@ -1,6 +1,5 @@
 namespace go order_share
-go_import "go.voyaseek.com/yuncourt/show" "../show/show.idl"
-with_client=false
+go_import "github.com/icompile/show" "../show/show.idl"
 
 struct Traveller
 {

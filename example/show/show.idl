@@ -1,6 +1,5 @@
 namespace go show
-go_import "go.voyaseek.com/yuncourt/stable" "../stable/fund_base.idl"
-with_client=false
+go_import "github.com/icompile/stable" "../stable/fund_base.idl"
 
 
 struct SupplierInfo

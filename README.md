@@ -35,6 +35,9 @@ go build -o icomplie .
 
 # 生成 TypeScript 微信小程序客户端
 ./icomplie -i example/order/order.idl -o ./out -lang typescript -platform miniapp
+
+# 仅生成 Swagger 文档（Go）
+./icomplie -i example/order/order.idl -o ./out -pp "myproject/api" -lang go -onlySwagger
 ```
 
 ## 命令行参数
@@ -48,6 +51,7 @@ go build -o icomplie .
 | `-target` | 生成目标: `server`, `client`, `all` | `server` |
 | `-platform` | 平台（仅 TypeScript）: `browser`, `miniapp` | `browser` |
 | `-onlyStruct` | 仅生成结构体定义 | `false` |
+| `-onlySwagger` | 仅生成 Swagger 文档（仅 Go） | `false` |
 
 ## 支持的语言
 
@@ -110,7 +114,7 @@ icomplie/
 │   ├── errors/          # 错误定义
 │   ├── semantic/        # 语义验证
 │   └── types/           # 类型注册表
-├── scripts/             # 构建脚本
+├── build.sh             # 构建脚本
 ├── main.go              # 程序入口
 └── README.md
 ```

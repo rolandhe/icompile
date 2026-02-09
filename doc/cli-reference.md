@@ -19,7 +19,7 @@
 | `-target` | string | 否 | `server` | 生成目标 |
 | `-platform` | string | 否 | `browser` | 平台（仅 TypeScript） |
 | `-onlyStruct` | bool | 否 | `false` | 仅生成结构体定义 |
-| `-tpl` | string | 否 | - | 自定义模板目录 |
+| `-onlySwagger` | bool | 否 | `false` | 仅生成 Swagger 文档（仅 Go） |
 
 ---
 
@@ -129,15 +129,17 @@
 - 在多个项目间共享类型定义
 - 不需要 HTTP 服务代码
 
-### -tpl（自定义模板）
+### -onlySwagger（仅 Swagger 文档）
 
-指定自定义模板目录，覆盖默认的嵌入式模板。
+仅生成 Swagger/OpenAPI 文档，不生成代码。此选项仅对 Go 语言有效。
 
 ```bash
-./icomplie -tpl ./my-templates ...
+./icomplie -onlySwagger -lang go ...
 ```
 
-模板目录结构参见 [代码生成说明](code-generation.md#模板自定义)。
+适用场景：
+- 只需要 API 文档
+- 在 CI/CD 中单独生成 Swagger JSON
 
 ---
 
@@ -248,7 +250,7 @@
   -o ./out \
   -pp "myproject/api" \
   -lang go \
-  -tpl ./custom-templates
+  -onlySwagger
 ```
 
 ---
@@ -266,41 +268,21 @@
 
 ### 1. 缺少必填参数
 
-```
-Error: -i (input file) is required
-Error: -o (output directory) is required
-```
+未提供任何参数时，程序会输出用法说明并退出。
 
-解决：确保提供了 `-i` 和 `-o` 参数。
+```bash
+# 需要至少提供 -i 和 -o 参数
+./icomplie -i example/order/order.idl -o ./out -pp "myproject/api"
+```
 
 ### 2. Go/Java 缺少包路径
 
-```
-Error: -pp (package path) is required for Go/Java
-```
-
-解决：Go 和 Java 需要提供 `-pp` 参数。
+Go 和 Java 语言需要提供 `-pp` 参数来指定包路径，否则生成的代码中 import/package 路径为空。
 
 ### 3. IDL 文件解析错误
 
-```
-Error: failed to parse IDL file: ...
-```
-
-解决：检查 IDL 文件语法是否正确，参见 [IDL 语法说明](idl-syntax.md)。
+如果 IDL 文件语法不正确，程序会输出解析错误信息（包含行号和列号），参见 [IDL 语法说明](idl-syntax.md)。
 
 ### 4. 导入的 IDL 文件找不到
 
-```
-Error: cannot find imported file: ./share.idl
-```
-
-解决：确保 `go_import` 中的相对路径正确，相对于当前 IDL 文件。
-
-### 5. TypeScript 不支持服务端
-
-```
-Error: TypeScript only supports client generation
-```
-
-解决：TypeScript 仅支持 `-target client`，不支持 `server`。
+确保 `go_import` 中的相对路径正确，相对于当前 IDL 文件所在目录。

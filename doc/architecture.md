@@ -63,15 +63,28 @@ type Definition struct {
 }
 
 type StructDefine struct {
-    Name    string
-    Fields  []*Field
-    Extends string
+    Name       string
+    Fields     []*Field
+    Extends    string
+    Point      bool       // 指针嵌入（POINT 关键字）
+    HasFormTag bool       // 生成 form tag（[form] 标记）
 }
 
 type ServiceDefine struct {
     Name    string
     RootUrl string
-    Methods []*Method
+    Methods []*Method      // 统一方法列表，保持 IDL 中的定义顺序
+    Posts   []*PostMethod
+    Gets    []*GetMethod
+    Puts    []*PutMethod
+}
+
+// Method 是统一的方法表示，保持 IDL 中的定义顺序
+type Method struct {
+    HTTPMethod HTTPMethod // GET, POST, PUT
+    BaseMethod
+    PostParams *PostParam
+    GetParams  *GetParam
 }
 ```
 
@@ -91,23 +104,26 @@ type ServiceDefine struct {
 
 代码生成器模块，采用模板化设计。
 
+Java 和 TypeScript 生成器实现了统一的 `Generator` 接口（`pkg/codegen/generator.go`）。Go 生成器目前使用独立的 `Main()` 函数入口（`pkg/codegen/golang/generator.go`），尚未迁移到 `Generator` 接口。
+
 ```
 pkg/codegen/
-├── generator.go          # 生成器接口定义
-├── golang/               # Go 代码生成器
-│   ├── generator.go      # 入口
+├── generator.go          # Generator 接口定义（Java/TypeScript 实现）
+├── golang/               # Go 代码生成器（通过 Main() 调用）
+│   ├── generator.go      # 入口（Main 函数）
 │   ├── generator_server.go
 │   ├── generator_client.go
 │   ├── generator_structs.go
-│   ├── client/           # 客户端生成
-│   └── template/         # 模板文件
-├── java/                 # Java 代码生成器
+│   ├── swagger.go        # Swagger/OpenAPI 2.0 生成
+│   ├── client/           # 客户端渲染逻辑
+│   └── template/         # 模板文件（go:embed）
+├── java/                 # Java 代码生成器（实现 Generator 接口）
 │   ├── generator.go
 │   ├── pojo.go
 │   ├── controller.go
 │   ├── client/
 │   └── template/
-└── typescript/           # TypeScript 代码生成器
+└── typescript/           # TypeScript 代码生成器（实现 Generator 接口）
     ├── generator.go
     ├── client/
     └── template/
@@ -115,10 +131,10 @@ pkg/codegen/
 
 ### 模板系统
 
-每个语言的代码生成器都使用独立的模板系统：
+每个语言的代码生成器都使用独立的模板系统，模板通过 `go:embed` 嵌入到二进制文件中：
 
 ```
-template/
+<lang>/template/
 ├── loader.go      # 模板加载器
 ├── embedded.go    # 嵌入式模板（go:embed）
 ├── registry.go    # 模板注册表
@@ -126,7 +142,7 @@ template/
 └── templates/     # 模板文件目录
 ```
 
-模板使用 Go 的 `text/template` 引擎，通过 `go:embed` 嵌入到二进制文件中。
+模板使用 Go 的 `text/template` 引擎。可以通过修改 `templates/` 目录下的模板文件来自定义生成的代码格式（需重新编译）。
 
 ## 扩展指南
 
@@ -141,14 +157,12 @@ template/
    }
    ```
 3. 创建模板系统：`template/` 目录
-4. 创建模板文件：`templates/<language>/`
-5. 在 `cmd/root.go` 中注册新语言
+4. 创建模板文件：`templates/` 目录
+5. 在 `cmd/root.go` 中添加语言分支调用
 
-### 自定义模板
+注意：当前 Go 生成器未遵循此接口模式，Java 和 TypeScript 生成器已实现。
 
-模板文件位于各语言的 `template/templates/` 目录下。可以通过修改模板文件来自定义生成的代码格式。
-
-模板变量示例：
+### 模板变量示例：
 ```go
 type ServiceClientRender struct {
     ServiceName string

@@ -1,7 +1,6 @@
 namespace go order
-go_import "go.voyaseek.com/yuncourt/order/order_share" "./share.idl"
-go_import "go.voyaseek.com/yuncourt/stable" "../stable/pager.idl"
-with_client=false
+go_import "github.com/icompile/order/order_share" "./share.idl"
+go_import "github.com/icompile/stable" "../stable/pager.idl"
 
 
 

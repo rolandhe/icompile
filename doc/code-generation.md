@@ -20,6 +20,9 @@
 
 # 仅生成结构体
 ./icomplie -i example/order/order.idl -o ./out -pp "myproject/api" -lang go -onlyStruct
+
+# 仅生成 Swagger 文档
+./icomplie -i example/order/order.idl -o ./out -pp "myproject/api" -lang go -onlySwagger
 ```
 
 ### 生成的目录结构
@@ -485,51 +488,3 @@ const response = await orderClient.createOrder({
 ```bash
 npm install --save-dev miniprogram-api-typings
 ```
-
----
-
-## 模板自定义
-
-icomplie 支持自定义代码生成模板。
-
-### 使用自定义模板
-
-```bash
-./icomplie -i input.idl -o ./out -pp "myproject" -tpl ./my-templates
-```
-
-### 模板目录结构
-
-```
-my-templates/
-├── go/
-│   ├── server/
-│   │   ├── struct.tmpl
-│   │   ├── interface.tmpl
-│   │   └── ...
-│   └── client/
-│       └── service_client.tmpl
-├── java/
-│   ├── server/
-│   │   ├── pojo.tmpl
-│   │   └── controller.tmpl
-│   └── client/
-│       └── service_client.tmpl
-└── typescript/
-    ├── browser/
-    │   └── ...
-    └── miniapp/
-        └── ...
-```
-
-### 模板语法
-
-模板使用 Go 的 `text/template` 语法。可用的模板函数包括：
-
-| 函数 | 说明 | 示例 |
-|------|------|------|
-| `formatVariable` | 格式化变量名 | `{{formatVariable .Name}}` |
-| `capitalize` | 首字母大写 | `{{capitalize .Name}}` |
-| `lower` | 转小写 | `{{lower .Name}}` |
-| `upper` | 转大写 | `{{upper .Name}}` |
-| `join` | 连接字符串 | `{{join .Items ","}}` |
