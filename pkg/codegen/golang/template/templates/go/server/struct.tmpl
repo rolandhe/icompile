@@ -1,0 +1,8 @@
+type {{.Name}} struct {
+{{- range .Fields}}
+	{{.Name}} {{.Type}} {{.Tag}}
+{{- end}}
+{{- if .ExtendStruct}}
+	{{if .ExtendPoint}}*{{end}}{{.ExtendStruct}}{{if .ExtendPoint}} `binding:"required"`{{end}}
+{{- end}}
+}

@@ -1,0 +1,8 @@
+namespace go stable
+with_client=false
+
+struct PagerReq
+{
+   required i64 pageSize (binding="required",remark="每页的条数"),
+   required i64 pageNum (binding="required",remark="页码，从1开始"),
+}

@@ -1,0 +1,6 @@
+run-pagger:
+	icomplie  -i ./pager.idl -onlyStruct -o ../../stable
+
+run-fund_base:
+	icomplie  -i ./fund_base.idl -onlyStruct -o ../../stable
+

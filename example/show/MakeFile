@@ -1,0 +1,4 @@
+run-show:
+	icomplie  -i ./show.idl -onlyStruct -o ../../show
+
+

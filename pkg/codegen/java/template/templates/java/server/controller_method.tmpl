@@ -1,0 +1,13 @@
+{{- if eq .HTTPMethod "POST"}}
+    @PostMapping("{{.Url}}")
+{{- else if eq .HTTPMethod "GET"}}
+    @GetMapping("{{.Url}}")
+{{- else if eq .HTTPMethod "PUT"}}
+    @PutMapping("{{.Url}}")
+{{- end}}
+    public {{.ReturnType}} {{.MethodName}}({{.ParamsSignature}}) {
+        // TODO: Implement {{.MethodName}}
+{{- if ne .ReturnType "void"}}
+        return null;
+{{- end}}
+    }

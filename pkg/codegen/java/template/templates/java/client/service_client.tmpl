@@ -1,0 +1,38 @@
+package {{.PackagePath}}.{{.Namespace}}.client;
+
+import {{.PackagePath}}.{{.Namespace}}.model.*;
+import java.util.*;
+
+/**
+ * Client for {{.ServiceName}} service.
+ */
+public class {{.ServiceName}}Client {
+    private final HttpClient client;
+
+    public {{.ServiceName}}Client(HttpClient client) {
+        this.client = client;
+    }
+{{range .Methods}}
+    /**
+     * {{.Description}}
+     */
+    public {{.ReturnType}} {{.MethodName}}({{.ParamsSignature}}) throws Exception {
+{{- if eq .HTTPMethod "POST"}}
+        return client.doPost("{{.FullPath}}", {{.BodyParam}}, null, {{.ResultClass}}.class);
+{{- else if eq .HTTPMethod "PUT"}}
+        return client.doPut("{{.FullPath}}", {{.BodyParam}}, null, {{.ResultClass}}.class);
+{{- else if eq .HTTPMethod "GET"}}
+{{- if .HasQueryParams}}
+        Map<String, List<String>> params = new HashMap<>();
+{{- range .QueryParams}}
+        params.put("{{.Name}}", Collections.singletonList(String.valueOf({{.VarName}})));
+{{- end}}
+        String url = client.buildUrl("{{.FullPath}}", params);
+{{- else}}
+        String url = "{{.FullPath}}";
+{{- end}}
+        return client.doGet(url, null, {{.ResultClass}}.class);
+{{- end}}
+    }
+{{end}}
+}

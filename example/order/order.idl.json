@@ -1,0 +1,857 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "order接口描述",
+    "title": "order接口文档",
+    "version": "v1.0.0"
+  },
+  "paths": {
+    "/yuncourt/api/v1/order/createPayment": {
+      "post": {
+        "description": "创建支付单",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "创建支付单",
+        "operationId": "createPayment",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "required": [
+                "orderId",
+                "payType",
+                "amount"
+              ],
+              "properties": {
+                "amount": {
+                  "description": "\"支付金额\"",
+                  "type": "string"
+                },
+                "orderId": {
+                  "description": "\"订单id\"",
+                  "type": "integer"
+                },
+                "payType": {
+                  "description": "\"支付订单类, 1 定金，中间预留,5 尾款， 6 全款\"",
+                  "type": "integer"
+                },
+                "remark": {
+                  "description": "\"支付备注\"",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "integer"
+                },
+                "errMsg": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/yuncourt/api/v1/order/createSafePaymentLink": {
+      "post": {
+        "description": "生成支付链接，传入支付单id",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "生成支付链接，传入支付单id",
+        "operationId": "createSafePaymentLink",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "string"
+                },
+                "errMsg": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/yuncourt/api/v1/order/delete": {
+      "post": {
+        "description": "delete订单",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "delete订单",
+        "operationId": "deleteAgentOrder",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "data": {},
+                "errMsg": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/yuncourt/api/v1/order/list": {
+      "post": {
+        "description": "代客下单订单列表",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "代客下单订单列表",
+        "operationId": "listAgentOrder",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "required": [
+                "pageSize",
+                "pageNum"
+              ],
+              "properties": {
+                "email": {
+                  "description": "\"客户email\"",
+                  "type": "string"
+                },
+                "id": {
+                  "description": "\"订单id\"",
+                  "type": "integer"
+                },
+                "pageNum": {
+                  "description": "\"页码，从1开始\"",
+                  "type": "integer"
+                },
+                "pageSize": {
+                  "description": "\"每页的条数\"",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "list": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "routeType",
+                          "routeSnapShotId",
+                          "infos",
+                          "amount",
+                          "routeId",
+                          "routeName",
+                          "orderType",
+                          "priceSnapshot",
+                          "createTime",
+                          "modifyTime",
+                          "modifyName",
+                          "modifyBy"
+                        ],
+                        "properties": {
+                          "amount": {
+                            "description": "\"最终合同金额\"",
+                            "type": "integer"
+                          },
+                          "contractInfo": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "contactUrl"
+                              ],
+                              "properties": {
+                                "contactUrl": {
+                                  "description": "\"合同文件url\"",
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "description": "\"合同文件id\"",
+                                  "type": "integer"
+                                }
+                              }
+                            }
+                          },
+                          "createTime": {
+                            "description": "\"创建时间\"",
+                            "type": "string"
+                          },
+                          "id": {
+                            "description": "\"id\"",
+                            "type": "integer"
+                          },
+                          "infos": {
+                            "description": "\"合同旅客信息\"",
+                            "type": "object",
+                            "required": [
+                              "contact",
+                              "email",
+                              "mobile",
+                              "travelStartDate",
+                              "travelEndDate",
+                              "travellerList"
+                            ],
+                            "properties": {
+                              "contact": {
+                                "description": "\"联系人\"",
+                                "type": "string"
+                              },
+                              "email": {
+                                "description": "\"联系人邮箱\"",
+                                "type": "string"
+                              },
+                              "mobile": {
+                                "description": "\"联系人手机号\"",
+                                "type": "string"
+                              },
+                              "travelEndDate": {
+                                "description": "\"出行结束日期\"",
+                                "type": "string"
+                              },
+                              "travelStartDate": {
+                                "description": "\"出行开始日期\"",
+                                "type": "string"
+                              },
+                              "travellerList": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "ageGroup",
+                                    "firstName",
+                                    "lastName",
+                                    "birthDay",
+                                    "passportNo",
+                                    "expiredAt",
+                                    "nation"
+                                  ],
+                                  "properties": {
+                                    "ageGroup": {
+                                      "description": "\"1 成年人，2 少年，3 婴儿\"",
+                                      "type": "integer"
+                                    },
+                                    "birthDay": {
+                                      "description": "\"生日\"",
+                                      "type": "string"
+                                    },
+                                    "email": {
+                                      "description": "\"邮箱\"",
+                                      "type": "string"
+                                    },
+                                    "expiredAt": {
+                                      "description": "\"护照有效期\"",
+                                      "type": "string"
+                                    },
+                                    "firstName": {
+                                      "description": "\"名\"",
+                                      "type": "string"
+                                    },
+                                    "lastName": {
+                                      "description": "\"姓\"",
+                                      "type": "string"
+                                    },
+                                    "mobile": {
+                                      "description": "\"手机号\"",
+                                      "type": "string"
+                                    },
+                                    "nation": {
+                                      "description": "\"国籍\"",
+                                      "type": "string"
+                                    },
+                                    "passportNo": {
+                                      "description": "\"护照号\"",
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "modifyBy": {
+                            "description": "\"最后修改人id\"",
+                            "type": "integer"
+                          },
+                          "modifyName": {
+                            "description": "\"最后修改人名称\"",
+                            "type": "string"
+                          },
+                          "modifyTime": {
+                            "description": "\"修改时间时间\"",
+                            "type": "string"
+                          },
+                          "orderType": {
+                            "description": "\"下单类型，1 代客下单，2静默下单\"",
+                            "type": "integer"
+                          },
+                          "payStatus": {
+                            "description": "\"支付状态\"",
+                            "type": "integer"
+                          },
+                          "priceSnapshot": {
+                            "description": "\"价格快照\"",
+                            "type": "object",
+                            "properties": {
+                              "groupPrice": {
+                                "description": "\"精品团价格\"",
+                                "type": "object",
+                                "required": [
+                                  "human",
+                                  "child",
+                                  "baby",
+                                  "gap",
+                                  "campaign",
+                                  "hasMemberPrice"
+                                ],
+                                "properties": {
+                                  "baby": {
+                                    "description": "\"baby price\"",
+                                    "type": "integer"
+                                  },
+                                  "campaign": {
+                                    "description": "\"是否有优惠活动\"",
+                                    "type": "boolean"
+                                  },
+                                  "child": {
+                                    "description": "\"child price\"",
+                                    "type": "integer"
+                                  },
+                                  "gap": {
+                                    "description": "\"差价\"",
+                                    "type": "integer"
+                                  },
+                                  "hasMemberPrice": {
+                                    "description": "\"是否参与会员价格\"",
+                                    "type": "boolean"
+                                  },
+                                  "human": {
+                                    "description": "\"human price\"",
+                                    "type": "integer"
+                                  },
+                                  "memberPrice": {
+                                    "description": "\"会员价格\"",
+                                    "type": "object",
+                                    "required": [
+                                      "human"
+                                    ],
+                                    "properties": {
+                                      "discountHuman": {
+                                        "description": "\"折扣价\"",
+                                        "type": "integer"
+                                      },
+                                      "human": {
+                                        "description": "\"human price\"",
+                                        "type": "integer"
+                                      }
+                                    }
+                                  },
+                                  "off": {
+                                    "description": "\"off 值\"",
+                                    "type": "integer"
+                                  }
+                                }
+                              },
+                              "isMember": {
+                                "description": "\"是否是是会员价格\"",
+                                "type": "boolean"
+                              },
+                              "privatePrice": {
+                                "description": "\"私家团价格\"",
+                                "type": "object",
+                                "required": [
+                                  "one",
+                                  "two",
+                                  "three",
+                                  "four",
+                                  "five",
+                                  "six",
+                                  "hasMemberPrice"
+                                ],
+                                "properties": {
+                                  "five": {
+                                    "description": "\"五人 price\"",
+                                    "type": "integer"
+                                  },
+                                  "four": {
+                                    "description": "\"四人 price\"",
+                                    "type": "integer"
+                                  },
+                                  "hasMemberPrice": {
+                                    "description": "\"是否参与会员价格\"",
+                                    "type": "boolean"
+                                  },
+                                  "memberPrice": {
+                                    "description": "\"会员价格\"",
+                                    "type": "object",
+                                    "required": [
+                                      "one",
+                                      "two",
+                                      "three",
+                                      "four",
+                                      "five",
+                                      "six"
+                                    ],
+                                    "properties": {
+                                      "five": {
+                                        "description": "\"五人 price\"",
+                                        "type": "integer"
+                                      },
+                                      "four": {
+                                        "description": "\"四人 price\"",
+                                        "type": "integer"
+                                      },
+                                      "one": {
+                                        "description": "\"单人 price\"",
+                                        "type": "integer"
+                                      },
+                                      "six": {
+                                        "description": "\"六人 price\"",
+                                        "type": "integer"
+                                      },
+                                      "three": {
+                                        "description": "\"三人 price\"",
+                                        "type": "integer"
+                                      },
+                                      "two": {
+                                        "description": "\"双人 price\"",
+                                        "type": "integer"
+                                      }
+                                    }
+                                  },
+                                  "one": {
+                                    "description": "\"单人 price\"",
+                                    "type": "integer"
+                                  },
+                                  "six": {
+                                    "description": "\"六人 price\"",
+                                    "type": "integer"
+                                  },
+                                  "three": {
+                                    "description": "\"三人 price\"",
+                                    "type": "integer"
+                                  },
+                                  "two": {
+                                    "description": "\"双人 price\"",
+                                    "type": "integer"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "routeId": {
+                            "description": "\"routeId\"",
+                            "type": "integer"
+                          },
+                          "routeName": {
+                            "description": "\"route name\"",
+                            "type": "string"
+                          },
+                          "routeSnapShotId": {
+                            "description": "\"线路snapshot id\"",
+                            "type": "integer"
+                          },
+                          "routeType": {
+                            "description": "\"线路类型, 1, 私家团， 2 精品团，4 定制团\"",
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    },
+                    "pageNo": {
+                      "description": "页码",
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "description": "页面大小",
+                      "type": "integer"
+                    },
+                    "totalCount": {
+                      "description": "总数",
+                      "type": "integer"
+                    },
+                    "totalPages": {
+                      "description": "总页数",
+                      "type": "integer"
+                    }
+                  }
+                },
+                "errMsg": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/yuncourt/api/v1/order/payList": {
+      "get": {
+        "description": "订单的支付列表",
+        "consumes": [
+          "application/json"
+        ],
+        "summary": "订单的支付列表",
+        "operationId": "orderPayList",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "\"order id\"",
+            "name": "orderId",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "orderId",
+                      "payType",
+                      "amount",
+                      "status",
+                      "expireAt",
+                      "createTime",
+                      "modifyTime",
+                      "createBy",
+                      "createByName"
+                    ],
+                    "properties": {
+                      "amount": {
+                        "description": "\"支付金额\"",
+                        "type": "string"
+                      },
+                      "channelName": {
+                        "description": "\"支付渠道名称\"",
+                        "type": "string"
+                      },
+                      "createBy": {
+                        "description": "\"创建人id\"",
+                        "type": "integer"
+                      },
+                      "createByName": {
+                        "description": "\"创建人名称\"",
+                        "type": "string"
+                      },
+                      "createTime": {
+                        "description": "\"创建时间\"",
+                        "type": "string"
+                      },
+                      "expireAt": {
+                        "description": "\"过期时间，unix时间戳\"",
+                        "type": "integer"
+                      },
+                      "id": {
+                        "description": "\"支付id\"",
+                        "type": "integer"
+                      },
+                      "modifyTime": {
+                        "description": "\"修改时间\"",
+                        "type": "string"
+                      },
+                      "orderId": {
+                        "description": "\"订单id\"",
+                        "type": "integer"
+                      },
+                      "payType": {
+                        "description": "\"支付订单类, 1 定金，中间预留,5 尾款， 6 全款\"",
+                        "type": "integer"
+                      },
+                      "remark": {
+                        "description": "\"支付备注\"",
+                        "type": "string"
+                      },
+                      "status": {
+                        "description": "\"0 待支付，1 支付成功，unix 毫秒时间戳，表示支付超时\"",
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "errMsg": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/yuncourt/api/v1/order/upsert": {
+      "post": {
+        "description": "代客下单创建订单",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "代客下单创建订单",
+        "operationId": "upsertAgentOrder",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "required": [
+                "routeType",
+                "routeSnapShotId",
+                "infos",
+                "amount"
+              ],
+              "properties": {
+                "additional": {
+                  "description": "\"额外费用\"",
+                  "type": "integer"
+                },
+                "additionalRemark": {
+                  "description": "\"额外费用说明\"",
+                  "type": "string"
+                },
+                "amount": {
+                  "description": "\"最终合同金额\"",
+                  "type": "integer"
+                },
+                "contractIds": {
+                  "type": "array",
+                  "items": {
+                    "description": "\"合同信息\"",
+                    "type": "integer"
+                  }
+                },
+                "discountAmount": {
+                  "description": "\"现金优化金额\"",
+                  "type": "integer"
+                },
+                "id": {
+                  "description": "\"id\"",
+                  "type": "integer"
+                },
+                "infos": {
+                  "description": "\"合同旅客信息\"",
+                  "type": "object",
+                  "required": [
+                    "contact",
+                    "email",
+                    "mobile",
+                    "travelStartDate",
+                    "travelEndDate",
+                    "travellerList"
+                  ],
+                  "properties": {
+                    "contact": {
+                      "description": "\"联系人\"",
+                      "type": "string"
+                    },
+                    "email": {
+                      "description": "\"联系人邮箱\"",
+                      "type": "string"
+                    },
+                    "mobile": {
+                      "description": "\"联系人手机号\"",
+                      "type": "string"
+                    },
+                    "travelEndDate": {
+                      "description": "\"出行结束日期\"",
+                      "type": "string"
+                    },
+                    "travelStartDate": {
+                      "description": "\"出行开始日期\"",
+                      "type": "string"
+                    },
+                    "travellerList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "ageGroup",
+                          "firstName",
+                          "lastName",
+                          "birthDay",
+                          "passportNo",
+                          "expiredAt",
+                          "nation"
+                        ],
+                        "properties": {
+                          "ageGroup": {
+                            "description": "\"1 成年人，2 少年，3 婴儿\"",
+                            "type": "integer"
+                          },
+                          "birthDay": {
+                            "description": "\"生日\"",
+                            "type": "string"
+                          },
+                          "email": {
+                            "description": "\"邮箱\"",
+                            "type": "string"
+                          },
+                          "expiredAt": {
+                            "description": "\"护照有效期\"",
+                            "type": "string"
+                          },
+                          "firstName": {
+                            "description": "\"名\"",
+                            "type": "string"
+                          },
+                          "lastName": {
+                            "description": "\"姓\"",
+                            "type": "string"
+                          },
+                          "mobile": {
+                            "description": "\"手机号\"",
+                            "type": "string"
+                          },
+                          "nation": {
+                            "description": "\"国籍\"",
+                            "type": "string"
+                          },
+                          "passportNo": {
+                            "description": "\"护照号\"",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "leadsId": {
+                  "description": "\"线索id\"",
+                  "type": "integer"
+                },
+                "remark": {
+                  "description": "\"合同备注\"",
+                  "type": "string"
+                },
+                "routeSnapShotId": {
+                  "description": "\"线路snapshot id\"",
+                  "type": "integer"
+                },
+                "routeType": {
+                  "description": "\"线路类型, 1, 私家团， 2 精品团，4 定制团\"",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "integer"
+                },
+                "errMsg": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

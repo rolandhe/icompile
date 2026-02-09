@@ -1,0 +1,7 @@
+func Bind{{.ServiceName}}Controller(e *gin.Engine) {
+	g := e.Group("{{.RootUrl}}")
+	svc := {{.ServiceName}}ControllerStd(&{{.ServiceNameLower}}ControllerImpl{})
+{{range .Handlers}}
+	{{.}}
+{{end}}
+}

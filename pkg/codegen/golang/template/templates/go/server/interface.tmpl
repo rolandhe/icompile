@@ -1,0 +1,5 @@
+type {{.Name}} interface {
+{{- range .Methods}}
+	{{.}}
+{{- end}}
+}

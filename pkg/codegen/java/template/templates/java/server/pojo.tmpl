@@ -1,0 +1,22 @@
+package {{.PackagePath}}.{{.Namespace}}.model;
+
+import lombok.Data;
+{{- if .HasExtends}}
+import lombok.EqualsAndHashCode;
+{{- end}}
+{{- if .HasList}}
+import java.util.List;
+{{- end}}
+{{- if .HasMap}}
+import java.util.Map;
+{{- end}}
+
+@Data
+{{- if .HasExtends}}
+@EqualsAndHashCode(callSuper = true)
+{{- end}}
+public class {{.ClassName}}{{if .Extends}} extends {{.Extends}}{{end}} {
+{{- range .Fields}}
+    private {{.Type}} {{.Name}};
+{{- end}}
+}

@@ -1,0 +1,52 @@
+namespace go order
+go_import "go.voyaseek.com/yuncourt/order/order_share" "./share.idl"
+go_import "go.voyaseek.com/yuncourt/stable" "../stable/pager.idl"
+with_client=false
+
+
+
+struct AgentOrderResp extends POINT struct order_share.CustomOrderResp
+{
+    required string modifyTime(remark="修改时间时间"),
+    required string modifyName(remark="最后修改人名称"),
+    required i64 modifyBy(remark="最后修改人id"),
+}
+
+struct AgentOrderQueryReq extends POINT struct stable.PagerReq
+{
+    i64 id(remark="订单id"),
+    string email(remark="客户email"),
+}
+
+struct AgentPayResp extends POINT struct order_share.PayInfoResp
+{
+    required i64 status(remark="0 待支付，1 支付成功，unix 毫秒时间戳，表示支付超时"),
+    string channelName(remark="支付渠道名称"),
+    required i64 expireAt(remark="过期时间，unix时间戳"),
+    required string createTime(remark="创建时间"),
+    required string modifyTime(remark="修改时间"),
+    required i64 createBy(remark="创建人id"),
+    required string createByName(remark="创建人名称"),
+}
+
+
+
+service AgentOrderService URL="/yuncourt/api/v1"
+{
+    ("代客下单创建订单")
+    POST URL="order/upsert" i64 upsertAgentOrder(struct order_share.AgentOrder req),
+    ("代客下单订单列表")
+    POST URL="order/list" struct AgentOrderResp PAGEABLE listAgentOrder(struct AgentOrderQueryReq req),
+
+    ("delete订单")
+    POST URL="order/delete" void deleteAgentOrder(struct commons.IdRequest id),
+
+    ("订单的支付列表")
+    GET URL="order/payList" list<struct AgentPayResp> orderPayList(required i64 orderId(binding="required",remark="order id")),
+
+
+    ("创建支付单")
+    POST URL="order/createPayment" i64 createPayment(struct order_share.PayInfo req),
+    ("生成支付链接，传入支付单id")
+    POST URL="order/createSafePaymentLink" string createSafePaymentLink(struct commons.IdRequest req),
+ }

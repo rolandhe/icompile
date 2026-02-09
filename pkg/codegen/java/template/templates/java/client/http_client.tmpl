@@ -1,0 +1,47 @@
+package {{.PackagePath}}.{{.Namespace}}.client;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * HTTP client interface for making API calls.
+ * Implement this interface to provide custom HTTP client behavior.
+ */
+public interface HttpClient {
+    /**
+     * Execute a POST request
+     * @param url The request URL
+     * @param body The request body (will be serialized to JSON)
+     * @param headers Optional headers
+     * @param responseType The response type class
+     * @return The deserialized response
+     */
+    <T> T doPost(String url, Object body, Map<String, String> headers, Class<T> responseType) throws Exception;
+
+    /**
+     * Execute a GET request
+     * @param url The request URL
+     * @param headers Optional headers
+     * @param responseType The response type class
+     * @return The deserialized response
+     */
+    <T> T doGet(String url, Map<String, String> headers, Class<T> responseType) throws Exception;
+
+    /**
+     * Execute a PUT request
+     * @param url The request URL
+     * @param body The request body (will be serialized to JSON)
+     * @param headers Optional headers
+     * @param responseType The response type class
+     * @return The deserialized response
+     */
+    <T> T doPut(String url, Object body, Map<String, String> headers, Class<T> responseType) throws Exception;
+
+    /**
+     * Build URL with query parameters
+     * @param basePath The base path
+     * @param params The query parameters
+     * @return The full URL with query string
+     */
+    String buildUrl(String basePath, Map<String, List<String>> params);
+}

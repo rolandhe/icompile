@@ -1,0 +1,43 @@
+namespace go stable
+with_client=false
+
+struct ImageInfo
+{
+    required i64 id (binding="required",remark="图片Id"),
+    string url(remark="图片地址"),
+}
+
+struct ImageIdPair
+{
+    required i64 smallId(binding="required",remark="小图id"),
+    required i64 bigId(binding="required",remark="大图id"),
+}
+
+struct ImageInfoPair
+{
+    required struct ImageInfo small(remark="小图信息"),
+    required struct ImageInfo big(remark="大图信息"),
+}
+
+struct IntroduceInfoSimple
+{
+    string subTitle (remark="副标题"),
+    required string introduce(binding="required",remark="描述"),
+    string video (remark="视频"),
+}
+
+struct IntroduceInfoReq extends POINT struct IntroduceInfoSimple
+{
+    list<struct ImageIdPair> images (remark="图片")
+}
+
+struct IntroduceInfoResp extends POINT struct IntroduceInfoSimple
+{
+    list<struct ImageInfoPair> images (remark="图片")
+}
+
+struct SwitchStateReq
+{
+    required i64 id(binding="required",remark="景点id"),
+    required bool on(remark="true 上架，false 下架"),
+}

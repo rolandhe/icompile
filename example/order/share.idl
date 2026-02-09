@@ -1,0 +1,115 @@
+namespace go order_share
+go_import "go.voyaseek.com/yuncourt/show" "../show/show.idl"
+with_client=false
+
+struct Traveller
+{
+    required i16 ageGroup(binding="required,oneof=1 2 3",remark="1 成年人，2 少年，3 婴儿"),
+    required string firstName(binding="required",remark="名"),
+    required string lastName(binding="required",remark="姓"),
+    required string birthDay(binding="required",remark="生日"),
+    string email(binding="omitempty,email",remark="邮箱"),
+    string mobile(remark="手机号"),
+    required string passportNo(binding="required",remark="护照号"),
+    required string expiredAt(binding="required",remark="护照有效期"),
+    required string nation(binding="required",remark="国籍"),
+}
+
+struct OrderInfos
+{
+    required string contact(binding="required",remark="联系人"),
+    required string email(binding="required",remark="联系人邮箱"),
+    required string mobile(binding="required",remark="联系人手机号"),
+    required string travelStartDate (binding="required",remark="出行开始日期"),
+    required string travelEndDate (binding="required",remark="出行结束日期"),
+    required list<struct Traveller> travellerList(binding="required,min=1,dive",remark="旅客信息"),
+}
+
+struct ContractInfo
+{
+    required i64 id(remark="合同文件id"),
+    required string contactUrl(remark="合同文件url"),
+}
+
+struct PriceSnapshot
+{
+    struct show.GroupPrice groupPrice(remark="精品团价格"),
+    struct show.PrivatePrice privatePrice(remark="私家团价格"),
+    bool isMember(remark="是否是是会员价格"),
+}
+
+struct CustomOrder
+{
+    i64 id(remark="id"),
+    required i64 routeType(binding="required",remark="线路类型, 1, 私家团， 2 精品团，4 定制团"),
+    required i64 routeSnapShotId(binding="required",remark="线路snapshot id"),
+    required struct OrderInfos infos(binding="required",remark="合同旅客信息"),
+    required i64 amount(binding="required",remark="最终合同金额"),
+}
+
+struct CustomOrderResp extends POINT struct CustomOrder
+{
+    required i64 routeId(remark="routeId"),
+    required string routeName(remark="route name"),
+    required i16 orderType(remark="下单类型，1 代客下单，2静默下单"),
+    list<struct ContractInfo> contractInfo(remark="合同信息"),
+    required struct PriceSnapshot priceSnapshot(remark="价格快照"),
+    required string createTime(remark="创建时间"),
+    i16 payStatus(remark="支付状态"),
+}
+
+
+struct AgentOrder extends POINT struct CustomOrder
+{
+
+    list<i64> contractIds(remark="合同信息"),
+    i64 additional(remark="额外费用"),
+    string additionalRemark(remark="额外费用说明"),
+    i64 discountAmount(remark="现金优化金额"),
+    i64 leadsId(remark="线索id"),
+    string remark(remark="合同备注"),
+}
+
+struct PayInfo
+{
+    required i64 orderId(binding="required",remark="订单id"),
+    required i16 payType(binding="required",remark="支付订单类, 1 定金，中间预留,5 尾款， 6 全款"),
+    required string amount(binding="required",remark="支付金额"),
+    string remark(remark="支付备注"),
+}
+
+struct PayInfoResp
+{
+    required i64 id(remark="支付id"),
+    required i64 orderId(binding="required",remark="订单id"),
+    required i16 payType(binding="required",remark="支付订单类, 1 定金，中间预留,5 尾款， 6 全款"),
+    required string amount(binding="required",remark="支付金额"),
+    string remark(remark="支付备注"),
+}
+
+
+struct PayOrderReq
+{
+    required string secretKey(binding="required,max=512",remark="安全支付单信息"),
+}
+
+
+
+struct CalTransactionFeeReq
+{
+    required string secretKey(binding="required,max=512",remark="安全支付单信息"),
+    required i32 channel(binding="required,oneof=1 2",remark="1 paypal,2 awx"),
+}
+
+struct AwxCreateOrderResp
+{
+    required string id(remark="awx pay order id"),
+    required string clientSecret(remark="client_secret"),
+    required string secretFlowId(remark="加密的支付流水id"),
+}
+
+struct CalTransactionFeeResp
+{
+    required string transactionFee(remark="手续费"),
+    required string totalAmount(remark="总价合计"),
+}

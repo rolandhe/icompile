@@ -1,0 +1,24 @@
+package {{.PackagePath}}.{{.Namespace}}.controller;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+{{- if .HasRequestBody}}
+import org.springframework.web.bind.annotation.RequestBody;
+{{- end}}
+{{- if .HasRequestParam}}
+import org.springframework.web.bind.annotation.RequestParam;
+{{- end}}
+{{- if .HasList}}
+import java.util.List;
+{{- end}}
+import {{.PackagePath}}.{{.Namespace}}.model.*;
+
+@RestController
+{{- if .RootUrl}}
+@RequestMapping("{{.RootUrl}}")
+{{- end}}
+public class {{.ClassName}} {
+{{range .Methods}}
+{{.Content}}
+{{- end}}
+}

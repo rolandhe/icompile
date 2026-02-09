@@ -1,0 +1,8 @@
+requests.{{.Method}}(g, &requests.RequestDesc[{{.InputType}}, *commons.Result[{{.ReturnType}}]]{
+	RelativePath: "{{.RelativePath}}",
+	BizCoreFunc:  {{.BizHandler}},
+	LogLevel:     requests.LOG_LEVEL_ALL,
+{{- if gt (len .Products) 0}}
+	AllowProducts: []int{ {{.Products}} },
+{{- end}}
+})

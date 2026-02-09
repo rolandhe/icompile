@@ -1,0 +1,224 @@
+namespace go show
+go_import "go.voyaseek.com/yuncourt/stable" "../stable/fund_base.idl"
+with_client=false
+
+
+struct SupplierInfo
+{
+    i64 id(remark="供应商id"),
+    string name(remark="供应商名称"),
+    struct stable.ImageInfo logo(remark="供应商logo"),
+}
+
+struct LookupRoutePriceReq
+{
+    required i64 routeId(binding="required",remark="线路id"),
+    required i16 routeType(binding="required",remark="线路类型"),
+    required string dateStr(binding="required",remark="出团日期"),
+}
+
+struct LookupPriceResp
+{
+    bool isMember(remark="当前用户是否是会员"),
+    struct PrivatePrice privatePrice(remark="私家团价格"),
+    struct GroupPrice groupPrice(remark="精品团价格"),
+}
+
+struct RouteSupplierInfo
+{
+    list<struct SupplierInfo> suppliers(remark="供应商信息"),
+    string supplierDesc(remark="供应商描述"),
+}
+
+struct DisplayPrice
+{
+    required i64 price(remark="价格"),
+    i32 off(remark="降价百分比,最终展示off%"),
+    i64 discount(remark="折后价格"),
+}
+
+struct RouteShortShowResp
+{
+    required i64 id(remark="线路id"),
+    required i64 snapshotId(remark="线路snap shot id"),
+    required string title(remark="线路title"),
+    required string subTitle(remark="线路副标题"),
+    required list<i64> cityIds(remark="线路覆盖城市"),
+    required i32 routeDays(remark="行程天数"),
+    required i64 routeTypes(remark="bitwise模式，支持63种类型，1私家团、2精品团,4定制团"),
+    required bool isCityDeep(remark="是否城市深度游"),
+    required list<struct stable.ImageInfoPair> imageInfoPairs(remark="图片，最少1个，最多20个"),
+    string video(remark="视频信息"),
+    required struct DisplayPrice stdPrice(remark="非会员价格"),
+    struct DisplayPrice memberPrice(remark="会员价格"),
+    bool useMemberPrice(remark="是否展示会员价格作为购买价格"),
+    required i64 priceOfRouteType(remark="价格对应的线路类型： 1 私家团,2 精品团"),
+}
+
+struct RouteDescription
+{
+    required string highlights(binding="required,max=10000",remark="行程亮点"),
+    required string introduce(binding="required,max=10000",remark="线路描述"),
+    required string fullyInclusive(binding="required,max=1500",remark="fully Inclusive"),
+    required string transportation(binding="required,max=1500",remark="transportation"),
+    required string includedMeals(binding="required,max=1500",remark="included Meals"),
+    required string groupTour(binding="required,max=1500",remark="group Tour"),
+    required string hotelDesc(binding="required,max=1500",remark="hotel Desc"),
+    required string physicalRating(binding="required,max=1500",remark="physical Rating"),
+}
+
+struct Transportation
+{
+    required i64 id(binding="required",remark="交通方式id"),
+    required string desc(binding="required,max=1500",remark="描述"),
+}
+
+struct TransportationResp extends POINT struct Transportation
+{
+    required string name(remark="名称"),
+    required list<struct stable.ImageInfoPair> images(remark="交通工具图片"),
+}
+struct TransportationInScheduleResp
+{
+    required i64 id(binding="required",remark="交通方式id"),
+    required string name(remark="名称"),
+    required list<struct stable.ImageInfoPair> images(remark="交通工具图片"),
+}
+
+
+struct ScheduleInfo
+{
+
+    required i32 dayIndex(binding="required",remark="第几天"),
+    required string theme(binding="required,max=500",remark="theme"),
+    required string themeContent(binding="required,max=10000",remark="theme content"),
+    required string sights(binding="required",remark="景点"),
+    bool includeTicket(remark="是否包含门票"),
+    bool includeGuide(remark="是否包含导游"),
+    required string hotel(binding="required,max=255",remark="hotel name"),
+    required i16 meals(remark="三餐 bitwise，1 早餐，2 午餐，4 晚餐"),
+}
+
+struct ScheduleResp extends POINT struct ScheduleInfo
+{
+    required i64 id(remark="id"),
+    required i64 routId(remark="线路id"),
+    required list<struct stable.ImageInfoPair> themeImages(remark="images"),
+    required list<struct TransportationInScheduleResp> transportations(remark="天级别交通方式"),
+}
+
+struct SnapshotScheduleResp extends POINT struct  ScheduleResp
+{
+    required i64 snapshotRouteId(remark="route snapshot id"),
+}
+
+struct GroupPriceRaw
+{
+    required i64 human(binding="required",remark="human price"),
+    required i64 child(binding="omitempty",remark="child price"),
+    required i64 baby(binding="omitempty",remark="baby price"),
+    required i64 gap(binding="omitempty",remark="差价"),
+}
+
+struct GroupPriceDefine extends POINT struct GroupPriceRaw
+{
+    required bool campaign(remark="是否有优惠活动"),
+    i32 off(remark="off 值"),
+}
+
+struct MemberGroupPriceDefine
+{
+    required i64 human(binding="required",remark="human price"),
+    i64 discountHuman(remark="折扣价"),
+}
+
+struct GroupPrice extends POINT struct GroupPriceDefine
+{
+    required bool hasMemberPrice(remark="是否参与会员价格"),
+    struct MemberGroupPriceDefine memberPrice(binding="omitempty,"remark="会员价格"),
+}
+
+struct MemberGroupPriceResp extends POINT struct GroupPriceRaw
+{
+    i64 discountHuman(remark="折扣价"),
+    i32 off(remark="off 值"),
+}
+
+struct GroupPriceResp extends POINT struct GroupPriceDefine
+{
+    required bool hasMemberPrice(remark="是否参与会员价格"),
+    struct MemberGroupPriceDefine memberPrice(binding="omitempty,"remark="会员价格"),
+}
+
+struct PrivatePriceDefine
+{
+    required i64 one(binding="required",remark="单人 price"),
+    required i64 two(binding="required",remark="双人 price"),
+    required i64 three(binding="required",remark="三人 price"),
+    required i64 four(binding="required",remark="四人 price"),
+    required i64 five(binding="required",remark="五人 price"),
+    required i64 six(binding="required",remark="六人 price"),
+}
+
+struct PrivatePrice extends POINT struct PrivatePriceDefine
+{
+    required bool hasMemberPrice(remark="是否参与会员价格"),
+    struct PrivatePriceDefine memberPrice(binding="omitempty",remark="会员价格"),
+}
+
+struct PriceIntroduce
+{
+    required string inclusions(binding="required,max=10000",remark="费用包含项"),
+    required string exclusions(binding="required,max=10000",remark="费用不包含项"),
+}
+
+struct PrivatePriceInfoResp
+{
+    required string dateStr(remark="日期"),
+    struct PrivatePrice privatePrice(remark="私家团或定制端价格"),
+}
+
+struct GroupPriceInfoResp
+{
+    required string dateStr(remark="日期"),
+    struct GroupPrice groupPrice(remark="精品团价格"),
+}
+struct RoutePriceCalendarResp
+{
+    required i64 routeId(remark="route id"),
+    required i64 routeTypes(remark="bitwise模式，支持63种类型，1私家团、2精品团,4定制团"),
+    list<struct PrivatePriceInfoResp> privatePrices(remark="私家团价格列表"),
+    list<struct GroupPriceInfoResp> groupPrices(remark="精品团价格列表"),
+    required struct PriceIntroduce introduce(remark="费用项说明，包含、不包含"),
+}
+
+struct RouteDetailShowResp extends POINT struct RouteShortShowResp
+{
+    required struct stable.ImageInfoPair mapImageIdPair(remark="地图"),
+    required struct RouteDescription routeDesc(remark="行程描述"),
+    required struct RouteSupplierInfo supplierInfo(remark="线路供应商信息"),
+}
+
+
+
+struct RouteDetail extends POINT struct RouteDescription
+{
+    required i64 routeId(remark="route id"),
+    required string name(remark="名称"),
+    required string subTitle(remark="线路副标题"),
+    required i32 routeDays(remark="行程天数"),
+    required i64 routeTypes(remark="bitwise模式，支持63种类型，1私家团、2精品团,4定制团"),
+    required bool isCityDeep(remark="是否城市深度游"),
+    required list<i64> cityIds(remark="覆盖城市，最少1个，最多20个"),
+    required list<struct stable.ImageInfoPair> imagePairs(remark="图片列表"),
+    string video(remark="视频信息"),
+    required struct stable.ImageInfoPair mapImageIdPair(remark="地图"),
+    required list<struct TransportationResp> transportationIntroduces(remark="交通方式及描述"),
+    required bool isDirectSales(remark="是否自营"),
+    required struct RouteSupplierInfo supplierInfo(remark="线路供应商信息"),
+}
+
+struct SnapshotRouteDetail extends POINT struct RouteDetail
+{
+    required i64 snapshotRouteId(remark="route snapshot id"),
+}
